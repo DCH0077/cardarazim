@@ -2,12 +2,27 @@ import argparse
 import sys
 import socket
 import struct
+import threading
 
 ###########################################################
 ####################### YOUR CODE #########################
 ###########################################################
 
+"""
+a basic function to handle the client, used in a thread for each client
+"""
+def handle_client(conn, addr):
+    size = conn.recv(4)
+    size = struct.unpack('<I', size)
+    data = conn.recv(size[0])
+    if not data:
+        break
+    print(data.decode())
+    conn.close()
 
+"""
+the absic function for the server. used to listen and kater accept connections from users.
+"""
 def server(server_ip, server_port):
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -15,14 +30,8 @@ def server(server_ip, server_port):
         s.listen()
         while True:
             conn, addr = s.accept()
-            size = conn.recv(4)
-            size = struct.unpack('<I', size)
-            data = conn.recv(size[0])
-            if not data:
-                break
-            print(data.decode())
-            conn.close()
-        s.close()
+            threading.Thread(target = handle_client, args = [conn, addr])
+9        s.close()
 
 
 ###########################################################

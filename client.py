@@ -7,7 +7,9 @@ import struct
 ####################### YOUR CODE #########################
 ###########################################################
 
-
+"""
+a basic function to send data to the server, given its ip and port and the data to send
+"""
 def send_data(server_ip, server_port, data):
     print(data)
     ret = struct.pack('<i', len(data)) + str.encode(data)
